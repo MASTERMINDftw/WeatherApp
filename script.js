@@ -1,4 +1,5 @@
 const apiKey = "26fd95910e92913e8998e5bf59651004";
+let isCelsius = true; // default unit
 
 function getWeatherIcon(weatherMain) {
   const iconMap = {
@@ -42,7 +43,9 @@ function getWeather() {
     </div>
   `;
 
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+  const unitType = isCelsius ? "metric" : "imperial";
+  const unitSymbol = isCelsius ? "°C" : "°F";
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${unitType}`;
 
   fetch(url)
     .then(response => {
@@ -65,11 +68,11 @@ function getWeather() {
         <div class="weather-card">
           <h2 class="city-name">${data.name}, ${data.sys.country}</h2>
           <div class="weather-icon">${weatherIcon}</div>
-          <div class="temperature">${temp}°C</div>
+          <div class="temperature">${temp}${unitSymbol}</div>
           <div class="weather-description">${weather}</div>
           <div class="weather-details">
             <div class="detail-item">
-              <div class="detail-value">${feelsLike}°C</div>
+              <div class="detail-value">${feelsLike}${unitSymbol}</div>
               <div class="detail-label">Feels Like</div>
             </div>
             <div class="detail-item">
@@ -91,6 +94,13 @@ function getWeather() {
         </div>
       `;
     });
+}
+
+// Toggle Celsius / Fahrenheit
+function toggleUnit() {
+  isCelsius = !isCelsius;
+  document.getElementById("unitToggle").innerText = isCelsius ? "Switch to °F" : "Switch to °C";
+  getWeather();
 }
 
 // Allow Enter key to trigger search
